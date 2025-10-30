@@ -13,9 +13,6 @@ function Header({ darkMode, setDarkMode }) {
         <nav className="nav">
           <a href="#features" className="nav-link">功能</a>
           <a href="#how-it-works" className="nav-link">原理</a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="nav-link">
-            GitHub
-          </a>
           
           <button 
             className="theme-toggle"
@@ -31,5 +28,7 @@ function Header({ darkMode, setDarkMode }) {
 }
 
 export default Header;
+
+
 
 

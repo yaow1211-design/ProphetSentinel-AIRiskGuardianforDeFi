@@ -1,37 +1,38 @@
-# ⚡ Prophet Sentinel - 快速启动指南
+# ⚡ Prophet Sentinel - 快速启动指南 | Quick Start Guide
 
-**目标：5分钟内启动完整系统**
+**中文：** 目标：5分钟内启动完整系统  
+**English:** Goal: Launch complete system in 5 minutes
 
 ---
 
-## 🚀 一键启动（推荐）
+## 🚀 一键启动（推荐）| One-Click Launch (Recommended)
 
 ### macOS/Linux
 
 ```bash
-# 1. 克隆并进入项目
+# 1. 克隆并进入项目 | Clone and enter project
 cd /Users/tutu/Documents/ProphetSentinel-AIRiskGuardianforDeFi
 
-# 2. 配置环境变量
+# 2. 配置环境变量 | Configure environment variables
 cp .env.example .env
-# 编辑 .env 填入你的 Telegram Bot Token
+# 编辑 .env 填入你的 Telegram Bot Token | Edit .env and fill in your Telegram Bot Token
 
-# 3. 训练ML模型
+# 3. 训练ML模型 | Train ML model
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python models/train_model.py
 
-# 4. 启动后端（新终端）
+# 4. 启动后端（新终端）| Start backend (new terminal)
 python app.py
 
-# 5. 启动前端（新终端）
+# 5. 启动前端（新终端）| Start frontend (new terminal)
 cd ../frontend
 npm install
 npm start
 
-# 6. 启动Telegram Bot（新终端，可选）
+# 6. 启动Telegram Bot（新终端，可选）| Start Telegram Bot (new terminal, optional)
 cd ../telegram-bot
 npm install
 npm start
@@ -40,29 +41,29 @@ npm start
 ### Windows
 
 ```bash
-# 1. 进入项目
+# 1. 进入项目 | Enter project
 cd C:\Users\YourName\Documents\ProphetSentinel-AIRiskGuardianforDeFi
 
-# 2. 配置环境
+# 2. 配置环境 | Configure environment
 copy .env.example .env
-# 编辑 .env
+# 编辑 .env | Edit .env
 
-# 3. 训练模型
+# 3. 训练模型 | Train model
 cd backend
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 python models\train_model.py
 
-# 4. 启动后端（新命令行）
+# 4. 启动后端（新命令行）| Start backend (new command prompt)
 python app.py
 
-# 5. 启动前端（新命令行）
+# 5. 启动前端（新命令行）| Start frontend (new command prompt)
 cd ..\frontend
 npm install
 npm start
 
-# 6. 启动Bot（可选）
+# 6. 启动Bot（可选）| Start Bot (optional)
 cd ..\telegram-bot
 npm install
 npm start
@@ -70,29 +71,29 @@ npm start
 
 ---
 
-## 📋 分步指南
+## 📋 分步指南 | Step-by-Step Guide
 
-### Step 1: 环境准备（2分钟）
+### Step 1: 环境准备（2分钟）| Environment Setup (2 min)
 
 ```bash
-# 检查Python版本
-python --version  # 需要 3.11+
+# 检查Python版本 | Check Python version
+python --version  # 需要 3.11+ | Requires 3.11+
 
-# 检查Node版本
-node --version    # 需要 18+
+# 检查Node版本 | Check Node version
+node --version    # 需要 18+ | Requires 18+
 
-# 检查npm
+# 检查npm | Check npm
 npm --version
 ```
 
-### Step 2: 训练ML模型（1分钟）
+### Step 2: 训练ML模型（1分钟）| Train ML Model (1 min)
 
 ```bash
 cd backend
 python models/train_model.py
 ```
 
-**预期输出：**
+**预期输出 | Expected Output:**
 ```
 🚀 Prophet Sentinel - 模型训练开始
 🔧 生成 2000 条合成训练数据...
@@ -102,7 +103,7 @@ python models/train_model.py
 💾 模型已保存: backend/models/risk_model.pkl
 ```
 
-### Step 3: 启动后端（30秒）
+### Step 3: 启动后端（30秒）| Start Backend (30 sec)
 
 ```bash
 # 在 backend/ 目录
@@ -119,62 +120,63 @@ curl "http://localhost:5000/api/predict_risk?protocol=Jupiter"
 # 应返回风险数据JSON
 ```
 
-### Step 4: 启动前端（1分钟）
+### Step 4: 启动前端（1分钟）| Start Frontend (1 min)
 
 ```bash
 cd frontend
-npm install  # 首次需要
+npm install  # 首次需要 | First time only
 npm start
 ```
 
-访问：http://localhost:3000
+**中文：** 访问 http://localhost:3000  
+**English:** Visit http://localhost:3000
 
-**预期效果：**
-- ✅ 看到渐变紫色背景
+**预期效果 | Expected Results:**
+- ✅ 看到渐变紫色背景 | See gradient purple background
 - ✅ Hero标题 "🧠 Prophet Sentinel"
-- ✅ 风险热图显示6个协议
-- ✅ 可以点击协议查看详情
+- ✅ 风险热图显示6个协议 | Risk heatmap shows 6 protocols
+- ✅ 可以点击协议查看详情 | Click protocols to see details
 
-### Step 5: 启动Telegram Bot（可选，30秒）
+### Step 5: 启动Telegram Bot（可选，30秒）| Start Telegram Bot (Optional, 30 sec)
 
 ```bash
-# 先在 .env 设置 TELEGRAM_BOT_TOKEN
+# 先在 .env 设置 TELEGRAM_BOT_TOKEN | Set TELEGRAM_BOT_TOKEN in .env first
 cd telegram-bot
 npm install
 npm start
 ```
 
-**测试Bot：**
-1. 在Telegram搜索你的Bot
-2. 发送 `/start`
-3. 发送 `/risk Jupiter`
+**测试Bot | Test Bot:**
+1. 在Telegram搜索你的Bot | Search for your Bot in Telegram
+2. 发送 `/start` | Send `/start`
+3. 发送 `/risk Jupiter` | Send `/risk Jupiter`
 
 ---
 
-## 🎯 验证清单
+## 🎯 验证清单 | Verification Checklist
 
-### 后端检查
-- [ ] http://localhost:5000 显示API文档
-- [ ] http://localhost:5000/api/health 返回 `{"status": "healthy"}`
-- [ ] http://localhost:5000/api/protocols 返回协议列表
-- [ ] http://localhost:5000/api/predict_risk?protocol=Jupiter 返回风险数据
+### 后端检查 | Backend Check
+- [ ] http://localhost:5001 显示API文档 | Shows API docs
+- [ ] http://localhost:5001/api/health 返回 | Returns `{"status": "healthy"}`
+- [ ] http://localhost:5001/api/protocols 返回协议列表 | Returns protocol list
+- [ ] http://localhost:5001/api/predict_risk?protocol=Jupiter 返回风险数据 | Returns risk data
 
-### 前端检查
-- [ ] http://localhost:3000 正常加载
-- [ ] 风险热图显示6个协议柱状图
-- [ ] 柱状图颜色正确（绿/黄/红）
-- [ ] 点击协议后显示详情卡片
-- [ ] 30秒后数据自动刷新
+### 前端检查 | Frontend Check
+- [ ] http://localhost:3000 正常加载 | Loads normally
+- [ ] 风险热图显示6个协议柱状图 | Heatmap shows 6 protocol bars
+- [ ] 柱状图颜色正确（绿/黄/红）| Bar colors correct (green/yellow/red)
+- [ ] 点击协议后显示详情卡片 | Click protocol shows detail card
+- [ ] 30秒后数据自动刷新 | Data auto-refreshes after 30s
 
-### Bot检查（如果启动）
-- [ ] Bot在线
-- [ ] `/start` 返回欢迎消息
-- [ ] `/risk Jupiter` 返回风险分析
-- [ ] `/protocols` 显示协议列表
+### Bot检查（如果启动）| Bot Check (If Started)
+- [ ] Bot在线 | Bot is online
+- [ ] `/start` 返回欢迎消息 | Returns welcome message
+- [ ] `/risk Jupiter` 返回风险分析 | Returns risk analysis
+- [ ] `/protocols` 显示协议列表 | Shows protocol list
 
 ---
 
-## 🐛 常见问题
+## 🐛 常见问题 | Common Issues
 
 ### Q1: 后端启动失败 "ModuleNotFoundError"
 ```bash
@@ -223,9 +225,9 @@ npm install
 
 ---
 
-## 📊 性能优化
+## 📊 性能优化 | Performance Optimization
 
-### 后端优化
+### 后端优化 | Backend Optimization
 ```bash
 # 使用生产服务器
 pip install gunicorn
@@ -299,5 +301,7 @@ docker-compose up -d
 - Email: support@prophetsentinel.com
 
 **祝你使用愉快！🚀**
+
+
 
 

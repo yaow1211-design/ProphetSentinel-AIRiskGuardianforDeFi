@@ -4,15 +4,16 @@
   "description": "Prophet Sentinel - DeFi风险预测Dashboard",
   "private": true,
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "recharts": "^2.10.0",
-    "axios": "^1.6.2",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
     "@solana/wallet-adapter-wallets": "^0.19.32",
-    "@solana/web3.js": "^1.78.0"
+    "@solana/web3.js": "^1.78.0",
+    "ajv": "^8.12.0",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.10.0"
   },
   "overrides": {
     "typescript": "^4.9.5"
@@ -41,5 +42,3 @@
     ]
   }
 }
-
-

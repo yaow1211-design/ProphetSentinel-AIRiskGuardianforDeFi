@@ -5,11 +5,11 @@
 
 const { Telegraf } = require('telegraf');
 const axios = require('axios');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 
 // 配置
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE = process.env.BACKEND_API_URL || 'http://localhost:5001';
 
 if (!BOT_TOKEN) {
     console.error('❌ 错误: 请在.env文件中设置 TELEGRAM_BOT_TOKEN');
@@ -17,7 +17,21 @@ if (!BOT_TOKEN) {
 }
 
 // 创建Bot实例
-const bot = new Telegraf(BOT_TOKEN);
+const botOptions = {
+    handlerTimeout: 900000, // 15分钟超时
+};
+
+// 如果配置了代理，使用代理
+if (process.env.TELEGRAM_PROXY_HOST && process.env.TELEGRAM_PROXY_PORT) {
+    const { HttpsProxyAgent } = require('https-proxy-agent');
+    const proxyUrl = `http://${process.env.TELEGRAM_PROXY_HOST}:${process.env.TELEGRAM_PROXY_PORT}`;
+    botOptions.telegram = {
+        agent: new HttpsProxyAgent(proxyUrl)
+    };
+    console.log(`🔧 使用代理: ${proxyUrl}`);
+}
+
+const bot = new Telegraf(BOT_TOKEN, botOptions);
 
 // 订阅用户存储（生产环境应使用数据库）
 const subscribers = new Set();
@@ -317,21 +331,48 @@ bot.catch((err, ctx) => {
 
 // ==================== 启动Bot ====================
 
-console.log('🚀 启动 Prophet Sentinel Bot...');
-console.log(`📡 API地址: ${API_BASE}`);
-
-bot.launch()
-    .then(() => {
+async function startBot() {
+    console.log('🚀 启动 Prophet Sentinel Bot...');
+    console.log(`📡 API地址: ${API_BASE}`);
+    
+    try {
+        await bot.launch({
+            dropPendingUpdates: true // 忽略启动前的旧消息
+        });
+        
         console.log('✅ Bot已启动! 等待消息...\n');
         console.log('可用命令:');
         console.log('  /start - 开始');
         console.log('  /risk <协议> - 查询风险');
-        console.log('  /subscribe - 订阅警报\n');
-    })
-    .catch(err => {
-        console.error('❌ Bot启动失败:', err);
-        process.exit(1);
-    });
+        console.log('  /protocols - 协议列表');
+        console.log('  /subscribe - 订阅警报');
+        console.log('  /help - 帮助\n');
+        
+        console.log('💡 提示: 如果无法连接，请检查:');
+        console.log('   1. 网络连接是否正常');
+        console.log('   2. 是否需要配置代理 (TELEGRAM_PROXY_HOST/PORT)');
+        console.log('   3. Bot Token是否正确\n');
+        
+    } catch (err) {
+        console.error('❌ Bot启动失败:', err.message);
+        
+        if (err.code === 'ETIMEDOUT' || err.code === 'ENOTFOUND') {
+            console.error('\n🌐 网络连接问题:');
+            console.error('   - 无法连接到 api.telegram.org');
+            console.error('   - 请检查网络连接或配置代理');
+            console.error('   - 在.env中添加: TELEGRAM_PROXY_HOST 和 TELEGRAM_PROXY_PORT\n');
+        } else if (err.response && err.response.error_code === 401) {
+            console.error('\n🔑 Token错误:');
+            console.error('   - Bot Token无效或已过期');
+            console.error('   - 请在 @BotFather 检查Token\n');
+        }
+        
+        console.log('⚠️  Bot将继续尝试运行，但可能无法正常工作...\n');
+        // 不退出进程，让用户可以看到错误信息
+    }
+}
+
+startBot();
 
 // 优雅退出
 process.once('SIGINT', () => {
@@ -343,6 +384,7 @@ process.once('SIGTERM', () => {
     console.log('\n👋 停止Bot...');
     bot.stop('SIGTERM');
 });
+
 
 
 

@@ -17,7 +17,6 @@ function Footer() {
           <ul>
             <li><a href="#features">核心功能</a></li>
             <li><a href="#how-it-works">工作原理</a></li>
-            <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>
         </div>
         
@@ -34,9 +33,9 @@ function Footer() {
         <div className="footer-section">
           <h4>联系方式</h4>
           <ul>
-            <li>📧 Email: contact@example.com</li>
-            <li>🐦 Twitter: @ProphetSentinel</li>
-            <li>💬 Telegram: @ProphetSentinelBot</li>
+            <li>📧 Email: yaow1211@gmail.com</li>
+            <li>🐦 X: @MiaStarsAlign</li>
+            <li>💬 Telegram: @MiaStarsAlign</li>
           </ul>
         </div>
       </div>
@@ -49,5 +48,7 @@ function Footer() {
 }
 
 export default Footer;
+
+
 
 

@@ -12,7 +12,7 @@ class Config:
     # Flask配置
     SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key-change-in-prod')
     DEBUG = os.getenv('FLASK_ENV', 'development') == 'development'
-    PORT = int(os.getenv('FLASK_PORT', 5000))
+    PORT = int(os.getenv('FLASK_PORT', 5001))
     
     # Solana配置
     SOLANA_RPC_URL = os.getenv('SOLANA_RPC_URL', 'https://api.mainnet-beta.solana.com')
