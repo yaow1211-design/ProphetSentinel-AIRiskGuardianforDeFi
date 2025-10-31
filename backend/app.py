@@ -78,6 +78,13 @@ def init_services():
     """手动初始化服务（用于测试和预加载）"""
     _ensure_services_initialized()
 
+# 确保在模块导入时初始化服务（使得测试导入 app 时也能使用服务）
+try:
+    init_services()
+except Exception:
+    # 初始化失败时已经在 init_services 内部降级为 demo_mode，这里再捕获以防万一
+    pass
+
 # ==================== API路由 ====================
 
 @app.route('/', methods=['GET'])

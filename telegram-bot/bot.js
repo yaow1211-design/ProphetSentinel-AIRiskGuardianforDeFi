@@ -11,27 +11,42 @@ require('dotenv').config();
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const API_BASE = process.env.BACKEND_API_URL || 'http://localhost:5001';
 
-if (!BOT_TOKEN) {
-    console.error('❌ 错误: 请在.env文件中设置 TELEGRAM_BOT_TOKEN');
-    process.exit(1);
-}
-
-// 创建Bot实例
+// 创建Bot配置
 const botOptions = {
     handlerTimeout: 900000, // 15分钟超时
 };
 
-// 如果配置了代理，使用代理
-if (process.env.TELEGRAM_PROXY_HOST && process.env.TELEGRAM_PROXY_PORT) {
-    const { HttpsProxyAgent } = require('https-proxy-agent');
-    const proxyUrl = `http://${process.env.TELEGRAM_PROXY_HOST}:${process.env.TELEGRAM_PROXY_PORT}`;
-    botOptions.telegram = {
-        agent: new HttpsProxyAgent(proxyUrl)
-    };
-    console.log(`🔧 使用代理: ${proxyUrl}`);
-}
+let bot;
 
-const bot = new Telegraf(BOT_TOKEN, botOptions);
+if (BOT_TOKEN) {
+    // 如果配置了代理，使用代理
+    if (process.env.TELEGRAM_PROXY_HOST && process.env.TELEGRAM_PROXY_PORT) {
+        const { HttpsProxyAgent } = require('https-proxy-agent');
+        const proxyUrl = `http://${process.env.TELEGRAM_PROXY_HOST}:${process.env.TELEGRAM_PROXY_PORT}`;
+        botOptions.telegram = {
+            agent: new HttpsProxyAgent(proxyUrl)
+        };
+        console.log(`🔧 使用代理: ${proxyUrl}`);
+    }
+
+    // 创建真实的 Telegraf 实例
+    bot = new Telegraf(BOT_TOKEN, botOptions);
+
+} else {
+    // 当没有设置 BOT_TOKEN 时，允许在开发/演示模式下继续运行（不会退出进程）
+    console.warn('⚠️ TELEGRAM_BOT_TOKEN 未设置 - 以演示模式启动，Bot 不会连接到 Telegram。');
+
+    // 提供一个轻量级的 mock 对象以便注册处理器时不抛错（处理器在演示模式下不会生效）
+    bot = {
+        start: () => bot,
+        help: () => bot,
+        command: () => bot,
+        catch: () => {},
+        telegram: { sendMessage: async () => {} },
+        launch: async () => { console.log('⚠️ Demo 模式：跳过 bot.launch()'); },
+        stop: () => {}
+    };
+}
 
 // 订阅用户存储（生产环境应使用数据库）
 const subscribers = new Set();
