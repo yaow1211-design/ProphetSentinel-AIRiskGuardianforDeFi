@@ -1,0 +1,115 @@
+# Coverage.py 配置文件
+# Prophet Sentinel Test Coverage Configuration
+
+[run]
+# 源代码目录
+source = backend
+
+# 包含的文件模式
+include = 
+    backend/*.py
+    backend/**/*.py
+
+# 排除的文件模式
+omit =
+    */venv/*
+    */site-packages/*
+    */tests/*
+    */test_*
+    */__pycache__/*
+    */migrations/*
+    backend/venv/*
+    backend/models/train_model.py
+    backend/config.py
+    backend/__init__.py
+    backend/*/__init__.py
+
+# 分支覆盖
+branch = True
+
+# 并行模式（多进程测试）
+parallel = False
+
+# 数据文件
+data_file = .coverage
+
+[report]
+# 精度
+precision = 2
+
+# 显示缺失的行号
+show_missing = True
+
+# 跳过空文件
+skip_empty = True
+
+# 跳过覆盖的文件
+skip_covered = False
+
+# 排序
+sort = Cover
+
+# 失败的覆盖率阈值
+fail_under = 60
+
+# 忽略的错误
+ignore_errors = True
+
+# 排除的行
+exclude_lines =
+    # 标准排除
+    pragma: no cover
+    def __repr__
+    def __str__
+    
+    # 调试代码
+    if DEBUG
+    if debug
+    
+    # 防御性编程
+    raise AssertionError
+    raise NotImplementedError
+    
+    # 类型检查
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    
+    # 抽象方法
+    @abstract
+    @abc.abstractmethod
+    
+    # 主程序入口
+    if __name__ == .__main__.:
+    
+    # 异常处理
+    except Exception
+    except.*Error
+    
+    # 日志和打印
+    logger.debug
+    print\(
+
+[html]
+# HTML 报告目录
+directory = htmlcov
+
+# 标题
+title = Prophet Sentinel Coverage Report
+
+[xml]
+# XML 报告文件
+output = coverage.xml
+
+[json]
+# JSON 报告文件
+output = coverage.json
+# 美化输出
+pretty_print = True
+
+[paths]
+# 路径映射（用于不同环境）
+source =
+    backend/
+    /Users/*/backend/
+    /home/*/backend/
+

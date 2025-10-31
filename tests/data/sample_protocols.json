@@ -1,0 +1,49 @@
+{
+  "protocols": [
+    {
+      "name": "Jupiter",
+      "type": "DEX Aggregator",
+      "metrics": {
+        "volume_24h": 50000000,
+        "liquidity_change": 0.05,
+        "whale_transfers": 3,
+        "holder_concentration": 0.35
+      },
+      "expected_risk": "low"
+    },
+    {
+      "name": "Orca",
+      "type": "AMM DEX",
+      "metrics": {
+        "volume_24h": 28500000,
+        "liquidity_change": -0.052,
+        "whale_transfers": 2,
+        "holder_concentration": 0.483
+      },
+      "expected_risk": "medium"
+    },
+    {
+      "name": "Raydium",
+      "type": "AMM DEX",
+      "metrics": {
+        "volume_24h": 35000000,
+        "liquidity_change": 0.08,
+        "whale_transfers": 4,
+        "holder_concentration": 0.42
+      },
+      "expected_risk": "low"
+    },
+    {
+      "name": "HighRiskProtocol",
+      "type": "Test",
+      "metrics": {
+        "volume_24h": 500000,
+        "liquidity_change": -0.45,
+        "whale_transfers": 20,
+        "holder_concentration": 0.95
+      },
+      "expected_risk": "high"
+    }
+  ]
+}
+
