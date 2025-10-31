@@ -2,18 +2,17 @@
 API端点测试
 """
 import pytest
-import sys
-import os
-
-# 添加backend到路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../backend'))
-
-from app import app
+from app import app, init_services
 
 @pytest.fixture
 def client():
     """创建测试客户端"""
     app.config['TESTING'] = True
+    
+    # 初始化服务（会自动使用demo模式）
+    with app.app_context():
+        init_services()
+    
     with app.test_client() as client:
         yield client
 
@@ -71,6 +70,10 @@ def test_invalid_endpoint(client):
     """测试无效端点"""
     response = client.get('/api/nonexistent')
     assert response.status_code == 404
+
+
+
+
 
 
 

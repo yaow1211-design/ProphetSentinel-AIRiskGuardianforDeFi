@@ -2,12 +2,7 @@
 ML模型测试
 """
 import pytest
-import sys
-import os
 import numpy as np
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../backend'))
-
 from models.predict import RiskPredictor
 
 def test_risk_predictor_init():
@@ -62,6 +57,10 @@ def test_predict_with_zero_values():
     
     result = predictor.predict(metrics)
     assert 'risk_score' in result
+
+
+
+
 
 
 
