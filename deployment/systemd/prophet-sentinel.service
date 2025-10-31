@@ -1,0 +1,64 @@
+[Unit]
+Description=Prophet Sentinel API - DeFi Risk Guardian
+Documentation=https://github.com/yaow1211-design/ProphetSentinel-AIRiskGuardianforDeFi
+After=network.target
+
+[Service]
+Type=notify
+User=prophet
+Group=prophet
+WorkingDirectory=/opt/prophet-sentinel/backend
+
+# 环境变量
+Environment="PATH=/opt/prophet-sentinel/backend/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="FLASK_DEBUG=False"
+Environment="PORT=5001"
+Environment="PYTHONPATH=/opt/prophet-sentinel/backend"
+
+# Gunicorn配置
+ExecStart=/opt/prophet-sentinel/backend/venv/bin/gunicorn \
+    --config gunicorn_config.py \
+    --bind 0.0.0.0:5001 \
+    --workers 4 \
+    --worker-class sync \
+    --worker-tmp-dir /dev/shm \
+    --timeout 30 \
+    --graceful-timeout 30 \
+    --max-requests 1000 \
+    --max-requests-jitter 50 \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info \
+    --capture-output \
+    --enable-stdio-inheritance \
+    app:app
+
+# 重启策略
+Restart=always
+RestartSec=10
+StartLimitInterval=10min
+StartLimitBurst=5
+
+# 安全设置
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/prophet-sentinel/logs
+ReadOnlyPaths=/opt/prophet-sentinel
+
+# 资源限制
+LimitNOFILE=65535
+LimitNPROC=4096
+MemoryMax=2G
+CPUQuota=200%
+
+# 日志
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=prophet-sentinel
+
+[Install]
+WantedBy=multi-user.target
+

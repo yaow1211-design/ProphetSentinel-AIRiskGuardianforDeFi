@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # ==================== Backend API ====================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prophet-sentinel-api:latest
+    container_name: prophet-sentinel-api
+    restart: unless-stopped
+    
+    ports:
+      - "5001:5001"
+    
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=False
+      - PORT=5001
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=1
+      - GUNICORN_TIMEOUT=30
+      - GUNICORN_LOG_LEVEL=info
+      # Solana RPC (可配置)
+      # - SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+      # - HELIUS_API_KEY=your_api_key_here
+    
+    volumes:
+      # 日志持久化
+      - ./logs:/app/logs
+      # 模型文件（如果需要动态加载）
+      - ./backend/models:/app/models
+    
+    networks:
+      - prophet-network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    labels:
+      - "com.prophet.service=api"
+      - "com.prophet.version=1.0.0"
+    
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+  
+  # ==================== Nginx Reverse Proxy ====================
+  nginx:
+    image: nginx:alpine
+    container_name: prophet-sentinel-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/nginx/conf.d:/etc/nginx/conf.d:ro
+      # SSL证书（如果有）
+      # - ./deployment/nginx/ssl:/etc/nginx/ssl:ro
+    
+    depends_on:
+      - api
+    
+    networks:
+      - prophet-network
+    
+    labels:
+      - "com.prophet.service=nginx"
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  prophet-network:
+    driver: bridge
+    name: prophet-sentinel-network
+
+volumes:
+  logs:
+    driver: local
+

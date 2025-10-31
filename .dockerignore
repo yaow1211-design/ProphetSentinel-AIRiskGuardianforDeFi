@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+backend/venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+docs/
+
+# Frontend (不需要打包到后端镜像)
+frontend/
+node_modules/
+
+# Notebooks
+notebooks/
+
+# Scripts
+scripts/
+
+# Telegram Bot (单独部署)
+telegram-bot/
+
+# Data
+data/
+*.pkl
+*.csv
+*.json
+!backend/models/*.pkl
+
+# Deployment configs
+deployment/
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Tests
+tests/
+pytest.ini
+.coveragerc
+
+# Misc
+.env
+.env.*
+*.bak
+*.tmp
+

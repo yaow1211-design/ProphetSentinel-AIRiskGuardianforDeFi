@@ -1,12 +1,18 @@
 """
 Prophet Sentinel - Flask后端主程序
 实时AI风险预测API服务
+
+改进说明:
+- 使用 datetime.now(UTC) 替代已弃用的 datetime.utcnow()
+- 实现惰性初始化避免导入时副作用
+- 支持生产环境部署（Gunicorn + systemd/Docker）
 """
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime, UTC
 import logging
 import os
+from typing import Optional
 
 from config import Config
 from models.predict import RiskPredictor
@@ -22,23 +28,55 @@ CORS(app)
 # 设置日志
 logger = setup_logger()
 
-# 初始化服务
-risk_predictor = None
-solana_service = None
+# 服务实例（惰性初始化）
+_risk_predictor: Optional[RiskPredictor] = None
+_solana_service: Optional[SolanaService] = None
+_services_initialized = False
 
-def init_services():
-    """初始化ML模型和Solana服务"""
-    global risk_predictor, solana_service
+
+def get_risk_predictor() -> RiskPredictor:
+    """惰性获取风险预测器实例"""
+    global _risk_predictor, _services_initialized
+    
+    if _risk_predictor is None:
+        _ensure_services_initialized()
+    
+    return _risk_predictor
+
+
+def get_solana_service() -> SolanaService:
+    """惰性获取 Solana 服务实例"""
+    global _solana_service, _services_initialized
+    
+    if _solana_service is None:
+        _ensure_services_initialized()
+    
+    return _solana_service
+
+
+def _ensure_services_initialized():
+    """确保服务已初始化（内部使用）"""
+    global _risk_predictor, _solana_service, _services_initialized
+    
+    if _services_initialized:
+        return
     
     try:
-        risk_predictor = RiskPredictor()
-        solana_service = SolanaService()
+        _risk_predictor = RiskPredictor()
+        _solana_service = SolanaService()
+        _services_initialized = True
         logger.info("✅ 服务初始化成功")
     except Exception as e:
         logger.error(f"❌ 服务初始化失败: {e}")
         # Demo模式：即使初始化失败也继续运行
-        risk_predictor = RiskPredictor(demo_mode=True)
-        solana_service = SolanaService(demo_mode=True)
+        _risk_predictor = RiskPredictor(demo_mode=True)
+        _solana_service = SolanaService(demo_mode=True)
+        _services_initialized = True
+
+
+def init_services():
+    """手动初始化服务（用于测试和预加载）"""
+    _ensure_services_initialized()
 
 # ==================== API路由 ====================
 
@@ -62,9 +100,9 @@ def health_check():
     """健康检查端点"""
     return jsonify({
         'status': 'healthy',
-        'timestamp': datetime.utcnow().isoformat(),
-        'model_loaded': risk_predictor is not None,
-        'solana_connected': solana_service is not None
+        'timestamp': datetime.now(UTC).isoformat(),
+        'model_loaded': _services_initialized and _risk_predictor is not None,
+        'solana_connected': _services_initialized and _solana_service is not None
     })
 
 @app.route('/api/predict_risk', methods=['GET'])
@@ -79,11 +117,15 @@ def predict_risk():
         
         logger.info(f"🔍 收到风险预测请求: {protocol}")
         
+        # 惰性获取服务实例
+        solana_svc = get_solana_service()
+        risk_pred = get_risk_predictor()
+        
         # 1. 从Solana拉取实时指标
-        metrics = solana_service.get_protocol_metrics(protocol)
+        metrics = solana_svc.get_protocol_metrics(protocol)
         
         # 2. ML模型预测风险
-        prediction = risk_predictor.predict(metrics)
+        prediction = risk_pred.predict(metrics)
         
         # 3. 计算可持续性评分
         sustainable_score = calculate_sustainability_score(metrics)
@@ -109,7 +151,7 @@ def predict_risk():
             'alert_level': alert_level,
             'alert_emoji': alert_emoji,
             'sustainable_score': sustainable_score,
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(UTC).isoformat(),
             'metrics': {
                 'volume_24h': metrics.get('volume_24h'),
                 'liquidity_change': metrics.get('liquidity_change'),
@@ -171,7 +213,7 @@ def verify_proof():
             'verified': True,
             'proof_hash': proof_hash,
             'message': '✅ 风险分数已验证，钱包地址未泄露',
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.now(UTC).isoformat()
         })
         
     except Exception as e:
